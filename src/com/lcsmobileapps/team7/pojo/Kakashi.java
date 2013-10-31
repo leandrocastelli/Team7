@@ -17,5 +17,7 @@ public class Kakashi extends Ninja{
 		keyword = "manga";
 		numSounds = 2;
 		array = R.array.kakashi_list;
+		textColor = Color.BLACK;
+		
 	}
 }

@@ -9,6 +9,7 @@ public abstract class Ninja {
 	protected int imageID;
 	protected int soundID;
 	protected int color;
+	protected int textColor;
 	protected String keyword;
 	protected int numSounds;
 	protected int icon;
@@ -43,6 +44,9 @@ public abstract class Ninja {
 	}
 	public int getArray () {
 		return array;
+	}
+	public int getTextColor () {
+		return textColor;
 	}
 	
 	public static final String ARGS_POSITION = "position";

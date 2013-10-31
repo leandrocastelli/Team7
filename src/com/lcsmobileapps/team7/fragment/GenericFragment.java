@@ -1,6 +1,8 @@
 package com.lcsmobileapps.team7.fragment;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -56,12 +58,12 @@ public class GenericFragment extends Fragment{
 	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-//		inflater.inflate(R.menu.activity_pokemon, menu);
+		inflater.inflate(R.menu.ninja_menu, menu);
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int x = item.getItemId();
-		switch (x) {
+		int itemID = item.getItemId();
+		switch (itemID) {
 		case android.R.id.home: {
 			NinjaActivity mainActivity = (NinjaActivity)getActivity();
 			DrawerLayout drawerLayout = (DrawerLayout)mainActivity.findViewById(R.id.drawer_layout);
@@ -72,6 +74,30 @@ public class GenericFragment extends Fragment{
 				drawerLayout.openDrawer(Gravity.LEFT);
 			}
 		}
+		break;
+		case R.id.menu_wallpaper: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(getString(R.string.title_wallpaper));
+			builder.setMessage(R.string.msg_wallpaper);
+
+			builder.setNegativeButton(getString(R.string.cancel), new AlertDialog.OnClickListener() {
+
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+
+				}
+			});
+			builder.setPositiveButton(android.R.string.ok, new AlertDialog.OnClickListener() {
+
+				public void onClick(DialogInterface dialog, int which) {
+					ImageHelper.loadImageForWallpaper(ninja.getImageID(), getActivity());
+
+				}
+			});
+			builder.show();
+			
+		}
+		break;
 		}
 		return true;
 	}

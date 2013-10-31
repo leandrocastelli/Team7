@@ -17,5 +17,6 @@ public class Naruto extends Ninja{
 		keyword = "download";
 		numSounds = 7;
 		array = R.array.naruto_list;
+		textColor = Color.BLACK;
 	}
 }

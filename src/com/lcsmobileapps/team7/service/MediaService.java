@@ -49,6 +49,7 @@ public class MediaService extends Service implements SoundPlayer{
 		player.setOnCompletionListener(new OnCompletionListener() {
 			
 			public void onCompletion(MediaPlayer mp) {
+				
 				stopSelf();
 				
 			}

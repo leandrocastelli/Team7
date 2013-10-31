@@ -1,16 +1,15 @@
 package com.lcsmobileapps.team7.util;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-
-
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ public class ImageHelper extends AsyncTask<Integer,Void,Bitmap>{
 	@Override
 	protected Bitmap doInBackground(Integer... params) {
 		data = params[0];
+		
 
 		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
@@ -45,7 +45,8 @@ public class ImageHelper extends AsyncTask<Integer,Void,Bitmap>{
 			width = display.getWidth();
 			heigth = display.getHeight();
 		}
-
+		if (params.length > 1)
+			width = width <<1;
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeResource(ctx.getResources(), data, options);
@@ -54,20 +55,33 @@ public class ImageHelper extends AsyncTask<Integer,Void,Bitmap>{
 
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeResource(ctx.getResources(), data,options);
-		
-		addBitmapToMemoryCache(String.valueOf(data), bitmap);
+		if(params.length ==1)
+			addBitmapToMemoryCache(String.valueOf(data), bitmap);
 		return bitmap;
 	}
 
 	// Once complete, see if ImageView is still around and set bitmap.
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
+		
 		if (imageViewReference != null && bitmap != null) {
 			final ImageView imageView = imageViewReference.get();
 			if (imageView != null) {
 				imageView.setImageBitmap(bitmap);
 			}
+			else {
+				//Wallpaper
+				WallpaperManager wm = WallpaperManager.getInstance(ctx);
+				try {
+					wm.setBitmap(bitmap);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
+		
+		
 	}
 
 	public static int calculateInSampleSize(
@@ -115,6 +129,16 @@ public class ImageHelper extends AsyncTask<Integer,Void,Bitmap>{
 		else {
 			imageHelper.execute(id);
 		}
+		
+	}
+	public static void loadImageForWallpaper(int id, Context ctx) {
+		final String imageKey = String.valueOf(id);
+		
+		
+		ImageHelper imageHelper = new ImageHelper(null, ctx);
+		
+		imageHelper.execute(id,1);
+		
 		
 	}
 }

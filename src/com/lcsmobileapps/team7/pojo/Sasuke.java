@@ -18,6 +18,7 @@ public class Sasuke extends Ninja{
 		keyword = "computer";
 		numSounds = 4;
 		array = R.array.sasuke_list;
+		textColor = Color.WHITE;
 	}
 	
 }

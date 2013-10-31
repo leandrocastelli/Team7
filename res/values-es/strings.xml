@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Team 7</string>
+    <string name="menu_setas">Establecer como&#8230;</string>
+	<string name="rate">"Evalúe " </string>
+	<string name="remind_later">"Recuérdame más tarde" </string>
+	<string name="no_thanks">"No, gracias" </string>
+	<string name="format_rate">"Si te gusta usar %s, por favor tome un momento para evaluarlo. Gracias por su apoyo!"</string>
+	
+	
+	
+	 <string name="menu_setas">Establecer como&#8230;</string>
+	<string name="ringtone">Tono</string>
+	<string name="notification">Notificación</string>
+	<string name="alarm">Alarma</string>
+	<string name="set_success">" éxito configuración"</string>
+	<string name="set_fail">" aprovecha configuración"</string>
+	<string name="cancel">Cancelar</string>
+	<string name="menu_wallpaper">Fundo de pantalla</string>
+	<string name="title_wallpaper">Set as Wallpaper</string>
+	<string name="msg_wallpaper">Do you want to set this image as wallpaper?</string>
+</resources>

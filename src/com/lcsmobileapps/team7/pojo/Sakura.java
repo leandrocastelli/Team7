@@ -16,5 +16,6 @@ public class Sakura extends Ninja{
 		keyword = "games";
 		numSounds = 1;
 		array = R.array.sakura_list;
+		textColor = Color.WHITE;
 	}
 }

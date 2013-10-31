@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import android.support.v4.util.LruCache;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.lcsmobileapps.team7.adapter.DrawerAdapter;
+import com.lcsmobileapps.team7.factory.NinjaFactory;
 import com.lcsmobileapps.team7.filemanager.FileManager;
 import com.lcsmobileapps.team7.filemanager.FileManager.Props;
 import com.lcsmobileapps.team7.fragment.GenericFragment;
@@ -58,7 +59,7 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 
 	
 	ViewPager mViewPager;
-	static List<Fragment> list = new ArrayList<Fragment>(3);
+	
 	static Context ctx;
 	private SoundPlayer soundPlayer;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -81,8 +82,8 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 		}
 		
 	
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 		ImageHelper.mMemoryCache = new LruCache<String, Bitmap>(cacheSize);
 	
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -97,40 +98,13 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 			public void onPageSelected(int arg0) {
 				int currentItem = mViewPager.getCurrentItem();
 				PagerTitleStrip pageTitle = (PagerTitleStrip)findViewById(R.id.pager_title_strip);
-				GenericFragment currentFragment = (GenericFragment)mSectionsPagerAdapter.getItem(arg0);
+				
 				NinjaActivity ninjaActivity = (NinjaActivity)ctx;
 				ListView listView = (ListView)ninjaActivity.findViewById(R.id.left_drawer);
-				
-				listView.setAdapter(new DrawerAdapter(ninjaActivity,currentFragment.getNinja()));
-				switch(currentItem){
-				case 0: {
-					pageTitle.setBackgroundColor(Color.YELLOW);
-					pageTitle.setTextColor(Color.BLACK);
-					
-					
-				}
-				break;
-				case 1: {
-					pageTitle.setBackgroundColor(Color.BLUE);
-					pageTitle.setTextColor(Color.WHITE);
-
-				}
-				break;
-				case 2: {
-					pageTitle.setBackgroundColor(Color.MAGENTA);
-					pageTitle.setTextColor(Color.WHITE);
-
-				}
-				break;
-
-
-				case 3: {
-					pageTitle.setBackgroundColor(Color.GREEN);
-					pageTitle.setTextColor(Color.BLACK);
-				}
-				break;
-				}
-
+				Ninja currentNinja = NinjaFactory.getNinja(currentItem);
+				listView.setAdapter(new DrawerAdapter(ninjaActivity,currentNinja));
+				pageTitle.setBackgroundColor(currentNinja.getColor());
+				pageTitle.setTextColor(currentNinja.getTextColor());
 			}
 
 			@Override
@@ -163,8 +137,8 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				int currentItem = mViewPager.getCurrentItem();
-				GenericFragment currentFragment = (GenericFragment) mSectionsPagerAdapter.getItem(currentItem);
-				Ninja currentNinja = currentFragment.getNinja();
+			
+				Ninja currentNinja = NinjaFactory.getNinja(currentItem);
 				createDialog(currentNinja,position).show();
 				return false;
 			}
@@ -173,7 +147,7 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 		
 		
 		AdRequest adRequest = new AdRequest();
-		adRequest.addTestDevice("5A873CD5069A96C1FCBBEB66EB7CBC5A");
+	//	adRequest.addTestDevice("5A873CD5069A96C1FCBBEB66EB7CBC5A");
 //		adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
 		AdView adView = (AdView)findViewById(R.id.ad);
 		
@@ -183,13 +157,15 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 		adRequest.setLocation(lastKnownLocation);
 		adView.loadAd(adRequest);
 		
-		invalidateOptionsMenu();
+	//	invalidateOptionsMenu();
 		
 		AppRater.app_launched(this);
 		FileManager.map.put(0,Props.RINGTONE);
 		FileManager.map.put(1,Props.NOTIFICATION);
 		FileManager.map.put(2,Props.ALARM);
 		FileManager.map.put(3,Props.SEND);
+		
+	
 	}
 
 	@Override
@@ -199,8 +175,21 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 		super.onCreateOptionsMenu(menu);
 		return true;
 	}
+	@Override
+	public void onStop() {
+		super.onStop();
+		boolean isBound = bindService(new Intent(this,MediaService.class), this, Context.BIND_AUTO_CREATE);
+		if(isBound)
+			unbindService(this);
+		
+	}
 	
-
+	@Override
+	public void onResume() {
+		super.onResume();
+		bindService(new Intent(this,MediaService.class), this, Context.BIND_AUTO_CREATE);
+		
+	}
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
@@ -218,17 +207,17 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			Fragment fragment;
-			if (list.isEmpty() || position >= list.size()) {
+//			if (list.isEmpty() || position >= list.size()) {
 				
 				fragment = new GenericFragment();
 				Bundle args = new Bundle();
 				args.putInt(Ninja.ARGS_POSITION, position);
 				fragment.setArguments(args);
-				list.add(position, fragment);
-			}
-			else {
-				fragment = list.get(position);
-			}
+				
+//			}
+//			else {
+//				fragment = list.get(position);
+//			}
 			
 			return fragment;
 		}
