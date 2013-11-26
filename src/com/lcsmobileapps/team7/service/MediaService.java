@@ -36,25 +36,35 @@ public class MediaService extends Service implements SoundPlayer{
 	}
 	public void startPlaying(int soundID)
 	{
-		if(player!= null)
-		{
-			if(player.isPlaying())
+		try {
+			if(player!= null)
 			{
-				player.stop();
-				player.reset();
-				
+				if(player.isPlaying())
+				{
+					player.stop();
+					player.reset();
+
+				}
 			}
+			player = MediaPlayer.create(this,soundID);
+			player.setOnCompletionListener(new OnCompletionListener() {
+
+				public void onCompletion(MediaPlayer mp) {
+
+					stopSelf();
+
+				}
+			});
+			player.start();
 		}
-		player = MediaPlayer.create(this,soundID);
-		player.setOnCompletionListener(new OnCompletionListener() {
-			
-			public void onCompletion(MediaPlayer mp) {
-				
-				stopSelf();
-				
-			}
-		});
-	    player.start();
+		catch (IllegalStateException e) {
+			player = null;
+			startPlaying(soundID);
+		}
+		catch (NullPointerException e) {
+			player = null;
+			startPlaying(soundID);
+		}
 	  
 	}
 	

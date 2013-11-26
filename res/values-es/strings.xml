@@ -12,6 +12,7 @@
 	
 	 <string name="menu_setas">Establecer como&#8230;</string>
 	<string name="ringtone">Tono</string>
+	<string name="send">Compartir</string>
 	<string name="notification">Notificación</string>
 	<string name="alarm">Alarma</string>
 	<string name="set_success">" éxito configuración"</string>

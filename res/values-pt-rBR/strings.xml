@@ -12,6 +12,7 @@
 	
 	<string name="dialog_set_title">Configurar como</string>
 	<string name="ringtone">Toque de chamada</string>
+	<string name="send">Compartilhar</string>
 	<string name="notification">Notificação</string>
 	<string name="alarm">Alarme</string>
 	<string name="set_success">" configurado(a) corretamente"</string>

@@ -48,6 +48,7 @@
 	
 	<string name="dialog_set_title">Set Sound As</string>
 	<string name="ringtone">Ringtone</string>
+	<string name="send">Send</string>
 	<string name="notification">Notification</string>
 	<string name="alarm">Alarm</string>
 	<string name="set_success">" configuration success"</string>

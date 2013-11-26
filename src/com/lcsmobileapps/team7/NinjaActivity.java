@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -266,6 +267,7 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 		listString.add(getString(R.string.ringtone));
 		listString.add(getString(R.string.notification));
 		listString.add(getString(R.string.alarm));
+		listString.add(getString(R.string.send));
 		
 		
 		
@@ -281,6 +283,12 @@ public class NinjaActivity extends ActionBarActivity implements ServiceConnectio
 					Props selection = FileManager.map.get(arg1);
 					path = FileManager.getInstance().copyFile(adapter.getContext(), selection, in,ninja,position);
 					if((path.length()>0)) { //API Lvl 8 doesnt have isEmpty
+						if (selection.equals(Props.SEND)) {
+							Intent share = new Intent(Intent.ACTION_SEND);
+							share.setType("audio/*");
+							share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + path));
+							startActivity(share);
+						}
 						result = FileManager.getInstance().setAs(path,selection, adapter.getContext());
 					}
 					
